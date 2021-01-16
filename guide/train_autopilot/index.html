@@ -227,10 +227,7 @@ folder from the Raspberry Pi.</p>
 <ul>
 <li>In the same terminal you can now run the training script on the latest tub by passing the path to that tub as an argument. You can optionally pass path masks, such as <code>./data/*</code> or <code>./data/tub_?_17-08-28</code> to gather multiple tubs. For example:</li>
 </ul>
-<pre><code class="language-bash">python ~/mycar/manage.py train --tub &lt;tub folder names comma separated&gt; --model ./models/mypilot.h5
-</code></pre>
-<p>Optionally you can pass no arguments for the tub, and then all tubs will be used in the default data dir.</p>
-<pre><code class="language-bash">python ~/mycar/manage.py train --model ~/mycar/models/mypilot.h5
+<pre><code class="language-bash">donkey train --tub &lt;tub folder names comma separated&gt; --model ./models/mypilot.h5
 </code></pre>
 <ul>
 <li>You can create different model types with the <code>--type</code> argument during training. You may also choose to change the default model type in myconfig.py <code>DEFAULT_MODEL_TYPE</code>. When specifying a new model type, be sure to provide that type when running the model, or using the model in other tools like plotting or profiling. For more information on the different model types, look here for <a href="/parts/keras">Keras Parts</a>.</li>

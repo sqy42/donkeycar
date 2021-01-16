@@ -9,7 +9,7 @@
   
   
   <link rel="shortcut icon" href="../../../img/favicon.ico">
-  <title>Get Your Jetson Nano Working - Donkey Car</title>
+  <title>A Guide to using the Intel Realsense T265 sensor with Donkeycar - Donkey Car</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700" />
 
   <link rel="stylesheet" href="../../../css/theme.css" />
@@ -19,8 +19,8 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "Get Your Jetson Nano Working";
-    var mkdocs_page_input_path = "guide/robot_sbc/setup_jetson_nano.md";
+    var mkdocs_page_name = "A Guide to using the Intel Realsense T265 sensor with Donkeycar";
+    var mkdocs_page_input_path = "guide/robot_sbc/intel_t265.md";
     var mkdocs_page_url = null;
   </script>
   
@@ -165,10 +165,10 @@
     
       
     
-    <li>Get Your Jetson Nano Working</li>
+    <li>A Guide to using the Intel Realsense T265 sensor with Donkeycar</li>
     <li class="wy-breadcrumbs-aside">
       
-        <a href="https://github.com/autorope/donkeycar/edit/master/docs/guide/robot_sbc/setup_jetson_nano.md"
+        <a href="https://github.com/autorope/donkeycar/edit/master/docs/guide/robot_sbc/intel_t265.md"
           class="icon icon-github"> Edit on GitHub</a>
       
     </li>
@@ -179,89 +179,37 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="get-your-jetson-nano-working">Get Your Jetson Nano Working</h1>
-<p><img alt="donkey" src="/assets/logos/nvidia_logo.png" /></p>
-<ul>
-<li><a href="#step-1-flash-operating-system">Step 1: Flash Operating System</a></li>
-<li><a href="#step-2-install-dependencies">Step 2: Install Dependencies</a></li>
-<li><a href="#step-3-setup-virtual-env">Step 3: Setup Virtual Env</a></li>
-<li><a href="#step-4-install-donkeycar-python-code">Step 4: Install Donkeycar Python Code</a></li>
-<li>Then <a href="/guide/create_application/">Create your Donkeycar Application</a></li>
-</ul>
-<h2 id="step-1-flash-operating-system">Step 1: Flash Operating System</h2>
-<p>Visit the official <a href="https://developer.nvidia.com/embedded/learn/get-started-jetson-nano-devkit#prepare">Nvidia Jetson Nano Getting Started Guide</a>. Work through the <strong>Prepare for Setup</strong>, <strong>Writing Image to the microSD Card</strong>, and <strong>Setup and First Boot</strong> instructions, then return here.</p>
-<h2 id="step-2-install-dependencies">Step 2: Install Dependencies</h2>
-<p>ssh into your vehicle. Use the the terminal for Ubuntu or Mac. <a href="https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html">Putty</a> for windows.</p>
-<p>Note: you can either proceed with this tutorial, or if you have Jetpack 4.4 installed, you can use a script to automate the setup. The script is located in <code>donkeycar/install/nano/install-jp44.sh</code>. You will need to edit line #3 of the script and replace the default password with your password. This script will install all Git repositories into a ~/projects directory. If you wish to use a different directory, you will need to change this as well (replace all instances of ~/projects with your desired folder path). </p>
-<p>First install some packages with <code>apt-get</code>.</p>
-<pre><code class="language-bash">sudo apt-get update -y
-sudo apt-get upgrade -y
-sudo apt-get install -y libhdf5-serial-dev hdf5-tools libhdf5-dev zlib1g-dev zip libjpeg8-dev liblapack-dev libblas-dev gfortran
-sudo apt-get install -y python3-dev python3-pip
-sudo apt-get install -y libxslt1-dev libxml2-dev libffi-dev libcurl4-openssl-dev libssl-dev libpng-dev libopenblas-dev
-sudo apt-get install -y git
-sudo apt-get install -y openmpi-doc openmpi-bin libopenmpi-dev libopenblas-dev
-</code></pre>
-<p>Next, you will need to install packages with <code>pip</code>:</p>
-<pre><code class="language-bash">sudo -H pip3 install -U pip testresources setuptools
-sudo -H pip3 install -U futures==3.1.1 protobuf==3.12.2 pybind11==2.5.0
-sudo -H pip3 install -U cython==0.29.21
-sudo -H pip3 install -U numpy==1.19.0
-sudo -H pip3 install -U future==0.18.2 mock==4.0.2 h5py==2.10.0 keras_preprocessing==1.1.2 keras_applications==1.0.8 gast==0.3.3
-sudo -H pip3 install -U grpcio==1.30.0 absl-py==0.9.0 py-cpuinfo==7.0.0 psutil==5.7.2 portpicker==1.3.1 six requests==2.24.0 astor==0.8.1 termcolor==1.1.0 wrapt==1.12.1 google-pasta==0.2.0
-sudo -H pip3 install -U scipy==1.4.1
-sudo -H pip3 install -U pandas==1.0.5
-sudo -H pip3 install -U gdown
-
-# This will install tensorflow as a system package
-sudo -H pip3 install --pre --extra-index-url https://developer.download.nvidia.com/compute/redist/jp/v44 tensorflow==2.2.0+nv20.6
-</code></pre>
-<p>Finally, you can install PyTorch:</p>
-<pre><code class="language-bash"># Install PyTorch v1.7 - torchvision v0.8.1
-wget https://nvidia.box.com/shared/static/wa34qwrwtk9njtyarwt5nvo6imenfy26.whl -O torch-1.7.0-cp36-cp36m-linux_aarch64.whl
-sudo -H pip3 install ./torch-1.7.0-cp36-cp36m-linux_aarch64.whl
-
-# Install PyTorch Vision
-sudo apt-get install libjpeg-dev zlib1g-dev libpython3-dev libavcodec-dev libavformat-dev libswscale-dev
-
-# You can replace the following line with wherever you want to store your Git repositories
-mkdir -p ~/projects; cd ~/projects
-git clone --branch v0.8.1 https://github.com/pytorch/vision torchvision
-cd torchvision
-export BUILD_VERSION=0.8.1
-sudo python3 setup.py install
-</code></pre>
-<p>Optionally, you can install RPi.GPIO clone for Jetson Nano from <a href="https://github.com/NVIDIA/jetson-gpio">here</a>. This is not required for default setup, but can be useful if using LED or other GPIO driven devices.</p>
-<h2 id="step-3-setup-virtual-env">Step 3: Setup Virtual Env</h2>
-<pre><code class="language-bash">pip3 install virtualenv
-python3 -m virtualenv -p python3 env --system-site-packages
-echo &quot;source env/bin/activate&quot; &gt;&gt; ~/.bashrc
-source ~/.bashrc
-</code></pre>
-<h2 id="step-4-install-donkeycar-python-code">Step 4: Install Donkeycar Python Code</h2>
-<ul>
-<li>Change to a dir you would like to use as the head of your projects.</li>
-</ul>
-<pre><code class="language-bash">mkdir -p ~/projects; cd ~/projects
-</code></pre>
-<ul>
-<li>Get the latest donkeycar from Github.</li>
-</ul>
-<pre><code class="language-bash">git clone https://github.com/autorope/donkeycar
-cd donkeycar
-git checkout master
-pip install -e .[nano]
-</code></pre>
-<h2 id="step-5-install-pygame-optional">Step 5: Install PyGame (Optional)</h2>
-<p>If you plan to use a USB camera, you will also want to setup pygame:</p>
-<pre><code class="language-bash">sudo apt-get install python-dev libsdl1.2-dev libsdl-image1.2-dev libsdl-mixer1.2-dev libsdl-ttf2.0-dev libsdl1.2-dev libsmpeg-dev python-numpy subversion libportmidi-dev ffmpeg libswscale-dev libavformat-dev libavcodec-dev libfreetype6-dev
-
-pip install pygame
-
-</code></pre>
-<p>Later on you can add the <code>CAMERA_TYPE="WEBCAM"</code> in myconfig.py.</p>
+                <h1 id="a-guide-to-using-the-intel-realsense-t265-sensor-with-donkeycar">A Guide to using the Intel Realsense T265 sensor with Donkeycar</h1>
 <hr />
-<h3 id="next-create-your-donkeycar-application">Next, <a href="/guide/create_application/">create your Donkeycar application</a>.</h3>
+<ul>
+<li><strong>Note</strong> Although the Realsense T265 can be used with a Nvidia Jetson Nano, it's a bit easier to set up with a Raspberry Pi (we recommend the RPi 4, with at least 4GB memory). Also, the Intel Realsense D4XX series can also be used with Donkeycar as a regular camera (with the use of its depth sensing data coming soon), and we'll add instructions for that when it's ready.</li>
+</ul>
+<h2 id="original-t265-path-follower-code-by-tawn-kramer">Original T265 path follower code by <a href="https://github.com/tawnkramer/donkey">Tawn Kramer</a></h2>
+<h2 id="step-1-setup-librealsense-on-ubuntu-machine">Step 1: Setup Librealsense on Ubuntu Machine</h2>
+<p>Using the latest version of Raspian (tested with Raspian Buster) on the RPi, follow <a href="https://github.com/IntelRealSense/librealsense/blob/master/doc/installation_raspbian.md">these instructions</a> to set up Intel's Realsense libraries (Librealsense) and dependencies. </p>
+<h2 id="step-1-setup-donkeycar">Step 1: Setup Donkeycar</h2>
+<p>Follow the standard instructions <a href="https://docs.donkeycar.com/guide/install_software/">here</a></p>
+<h2 id="step-3-run-the-donkeycar-path-follower-app">Step 3: Run the Donkeycar path follower app</h2>
+<p>After you’ve done that, set up the directory with this:</p>
+<p>```donkey createcar --path ~/follow --template path_follower </p>
+<p>Running
+<code>cd ~/follow 
+python3 manage.py drive</code></p>
+<p>Once it’s running, open a browser on your laptop and enter this in the URL bar: http://<your nano’s IP address>:8890</p>
+<p>The rest of the instructions from Tawn’s repo:</p>
+<p>When you drive, this will draw a red line for the path, a green circle for the robot location.</p>
+<p>1) Mark a nice starting spot for your robot. Be sure to put it right back there each time you start.
+2) Drive the car in some kind of loop. You see the red line show the path.
+3) Hit X on the PS3/4 controller to save the path.
+4) Put the bot back at the start spot.
+5) Then hit the “select” button (on a PS3 controller) or “share” (on a PS4 controller) twice to go to pilot mode. This will start driving on the path. If you want it go faster or slower, change this line in the myconfig.py file: THROTTLE_FORWARD_PWM = 530</p>
+<p>Check the bottom of myconfig.py for some settings to tweak. PID values, map offsets and scale. things like that. You might want to start by downloading and using the myconfig.py file from my repo, which has some known-good settings and is otherwise a good place to start.
+Some tips:</p>
+<p>When you start, the green dot will be in the top left corner of the box. You may prefer to have it in the center. If so, change PATH_OFFSET = (0, 0) in the myconfig.py file to PATH_OFFSET = (250, 250)</p>
+<p>For a small course, you may find that the path is too small to see well. In that case, change PATH_SCALE = 5.0 to PATH_SCALE = 10.0 (or more, if necessary)</p>
+<p>If you’re not seeing the red line, that means that a path file has already been written. Delete “donkey_path.pkl” (rm donkey_path.pkl) and the red line should show up</p>
+<p>When you're running in auto mode, the green dot will change to blue</p>
+<p>It defaults to recording a path point every 0.3 meters. If you want it to be smoother, you can change to a smaller number in myconfig.py with this line: PATH_MIN_DIST = 0.3</p>
               
             </div>
           </div>

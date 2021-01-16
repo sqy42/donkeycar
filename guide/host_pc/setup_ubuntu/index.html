@@ -221,16 +221,24 @@ conda env remove -n donkey
 conda activate donkey
 pip install -e .[pc]
 </code></pre>
+<p>Note: if you are using ZSH (you'll know if you are), you won't be able to run <code>pip install -e .[pc]</code>. You'll need to escape the brackets and run <code>pip install -e .\[pc\]</code>.</p>
 <ul>
 <li>Optional Install Tensorflow GPU - only for NVidia Graphics cards</li>
 </ul>
 <p>You should have an NVidia GPU with the latest drivers. Conda will handle installing the correct cuda and cuddn libraries for the version of tensorflow you are using.</p>
-<pre><code class="language-bash">conda install tensorflow-gpu==1.13.1
+<pre><code class="language-bash">conda install tensorflow-gpu==2.2.0
 </code></pre>
 <ul>
 <li>Optional Install Coral edge tpu compiler</li>
 </ul>
 <p>If you have a Google Coral edge tpu, you may wish to compile models. You will need to install the edgetpu_compiler exectutable. Follow <a href="https://coral.withgoogle.com/docs/edgetpu/compiler/">their instructions</a>.</p>
+<ul>
+<li>Optionally configure PyTorch to use GPU - only for NVidia Graphics cards</li>
+</ul>
+<p>If you have an NVidia card, you should update to the lastest drivers and <a href="https://www.tensorflow.org/install/gpu#windows_setup">install Cuda SDK</a>. </p>
+<pre><code class="language-bash">conda install cudatoolkit=&lt;CUDA Version&gt; -c pytorch
+</code></pre>
+<p>You should replace <code>&lt;CUDA Version&gt;</code> with your CUDA version. Any version above 10.0 should work. You can find out your CUDA version by running <code>nvcc --version</code> or <code>nvidia-smi</code>. If the version given by these two commands don't match, go with the version given by <code>nvidia-smi</code>.</p>
 <ul>
 <li>Create your local working dir:</li>
 </ul>
