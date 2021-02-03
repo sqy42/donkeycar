@@ -395,6 +395,42 @@ class PS4Joystick(Joystick):
         }
 
 
+class MyJoystick(Joystick):
+    #An interface to a physical joystick available at /dev/input/js0
+    def __init__(self, *args, **kwargs):
+        super(MyJoystick, self).__init__(*args, **kwargs)
+
+
+        self.button_names = {
+            0x131 : 'cross',
+            0x132 : 'circle',
+            0x133 : 'triangle',
+            0x130 : 'square',
+            0x139 : 'options',
+            0x138 : 'share',
+            0x13d : 'pad',
+            0x134 : 'L1',
+            0x136 : 'L2',
+            0x135 : 'R1',
+            0x137 : 'R2',
+            0x13b : 'R3',
+            0x13a : 'L3',
+            0x13c : 'ps',
+        }
+
+
+        self.axis_names = {
+            0x5 : 'right_stick_vert',
+            0x2 : 'right_stick_horz',
+            0x1 : 'left_stick_vert',
+            0x0 : 'left_stick_horz',
+            0x11 : 'dpad_updown',
+            0x10 : 'dpad_leftright',
+            0x4 : 'right_trigger_axis',
+            0x3 : 'left_trigger_axis',
+        }
+
+
 class PS3JoystickPC(Joystick):
     '''
     An interface to a physical PS3 joystick available at /dev/input/js1
@@ -1109,6 +1145,43 @@ class PS4JoystickController(JoystickController):
         }
 
 
+class MyJoystickController(JoystickController):
+    #A Controller object that maps inputs to actions
+    def __init__(self, *args, **kwargs):
+        super(MyJoystickController, self).__init__(*args, **kwargs)
+
+
+    def init_js(self):
+        #attempt to init joystick
+        try:
+            self.js = MyJoystick(self.dev_fn)
+            self.js.init()
+        except FileNotFoundError:
+            print(self.dev_fn, "not found.")
+            self.js = None
+        return self.js is not None
+
+
+    def init_trigger_maps(self):
+        #init set of mapping from buttons to function calls
+
+        self.button_down_trigger_map = {
+            'share' : self.toggle_mode,
+            'triangle' : self.erase_last_N_records,
+            'cross' : self.emergency_stop,
+            'L1' : self.increase_max_throttle,
+            'R1' : self.decrease_max_throttle,
+            'options' : self.toggle_constant_throttle,
+            'circle' : self.toggle_manual_recording,
+        }
+
+
+        self.axis_trigger_map = {
+            'right_stick_horz' : self.set_steering,
+            'left_stick_vert' : self.set_throttle,
+        }
+
+
 class PyGamePS4JoystickController(PS4JoystickController):
     '''
     A Controller object that maps inputs to actions
@@ -1502,6 +1575,8 @@ def get_js_controller(cfg):
         cont_class = RC3ChanJoystickController
     elif cfg.CONTROLLER_TYPE == "pygame":
         cont_class = PyGamePS4JoystickController
+    elif cfg.CONTROLLER_TYPE == "custom":
+        cont_class = MyJoystickController
     else:
         raise( Exception("Unknown controller type: " + cfg.CONTROLLER_TYPE))
 
